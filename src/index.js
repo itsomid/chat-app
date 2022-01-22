@@ -1,7 +1,9 @@
-const app = require('./app')
+const {server, io} = require('./app')
 const port = process.env.PORT
 
-
-app.listen(port,()=>{
-    console.log('server is up on port:', port);
+io.on('connection',()=>{
+    console.log('New websocket connection');
+})
+server.listen(port,()=>{
+    console.log(`server is up on port: ${port}`);
 })
