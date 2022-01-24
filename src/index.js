@@ -1,7 +1,6 @@
 const { server, io } = require('./app')
 const port = process.env.PORT
 
-let count = 0
 let message = 'Welcome!!'
 
 
@@ -19,6 +18,11 @@ io.on('connection', (socket) => {
     })
     socket.on('disconnect', () => {
         io.emit('message','user has left!')
+    })
+
+    //setup a listener
+    socket.on('sendLocation',(coords)=>{
+        io.emit('message',`https://google.com/maps?q=${coords.latitude},${coords.longitude}`)
     })
 
 })
