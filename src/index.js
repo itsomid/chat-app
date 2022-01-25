@@ -9,12 +9,13 @@ io.on('connection', (socket) => {
 
     socket.emit('message', message)
     socket.broadcast.emit('message', 'A new user has joined!')
-    socket.on('sendMessage', (msg) => {
+    socket.on('sendMessage', (msg, callback) => {
         //emit the event to specific connection 
-        // socket.emit('countUpdated',count)
+        // socket.emit('message',count)
 
         //emit the event to all connection
-        io.emit('message', msg)
+        io.emit('message', msg) 
+        callback('Delivered.')
     })
     socket.on('disconnect', () => {
         io.emit('message','user has left!')

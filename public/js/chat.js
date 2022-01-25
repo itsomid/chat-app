@@ -8,7 +8,9 @@ socket.on('message', (message) => {
 document.querySelector('#message-form').addEventListener("submit", (e) => {
     e.preventDefault()
     const message = e.target.elements.message.value
-    socket.emit('sendMessage',message)
+    socket.emit('sendMessage',message,(callbackMessage)=>{
+        console.log('this message was delivered!',callbackMessage)
+    })
 })
 
 // const locationBtn = document.querySelector('#send-location');
