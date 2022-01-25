@@ -1,8 +1,8 @@
 const { server, io } = require('./app')
 const port = process.env.PORT
+const Filter = require('bad-words')
 
 let message = 'Welcome!!'
-
 
 io.on('connection', (socket) => {
     console.log('New websocket connection');
@@ -12,10 +12,14 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', (msg, callback) => {
         //emit the event to specific connection 
         // socket.emit('message',count)
+        const filter = new Filter()
 
+        if(filter.isProfane(msg)){
+            return callback('profanity is not allowed!')
+        }
         //emit the event to all connection
         io.emit('message', msg) 
-        callback('Delivered.')
+        callback()
     })
     socket.on('disconnect', () => {
         io.emit('message','user has left!')
