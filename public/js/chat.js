@@ -15,6 +15,7 @@ $messageForm.addEventListener("submit", (e) => {
  
     const message = e.target.elements.message.value
     socket.emit('sendMessage',message,(error)=>{
+
         $messageFormBtn.removeAttribute('disabled')
         $messageFormInput.value = ''
         $messageFormInput.focus()
@@ -25,18 +26,19 @@ $messageForm.addEventListener("submit", (e) => {
     })
 })
 
-// const locationBtn = document.querySelector('#send-location');
-// console.log(locationBtn)
-document.querySelector('#send-location').addEventListener("click",()=>{
+const $sendLocationBtn = document.querySelector('#send-location');
+
+$locationBtn.addEventListener("click",()=>{
     if(!navigator.geolocation){
         return alert('Geolocation is not supported by your browser')
     }
-
+    $locationBtn.setAttribute('disabled','disabled')
     navigator.geolocation.getCurrentPosition((position)=>{
         socket.emit('sendLocation',{
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
         },()=>{
+            $locationBtn.removeAttribute('disabled')
             console.log('Location shared!')
         })
     })
