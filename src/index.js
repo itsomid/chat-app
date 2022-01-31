@@ -6,8 +6,13 @@ const { generateMessage, generateLocationMessage } = require('./utils/messages')
 io.on('connection', (socket) => {
     console.log('New websocket connection');
 
-    socket.emit('message', generateMessage('Welcome!'))
-    socket.broadcast.emit('message', generateMessage('A new user has joined!'))
+    socket.on('join',({username, room})=>{
+        socket.join(room)
+        //socket.emit, socket.broadcast.emit, io.emit
+        socket.emit('message', generateMessage('Welcome!'))
+        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined!`))
+    })
+
     socket.on('sendMessage', (msg, callback) => {
         //emit the event to specific connection 
         // socket.emit('message',count)
