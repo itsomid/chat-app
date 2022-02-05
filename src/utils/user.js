@@ -1,58 +1,78 @@
 const users = []
 
-const addUser = ({id, username, room}) => {
+const addUser = ({ id, username, room }) => {
     //clean th data
     username = username.trim().toLowerCase()
     room = room.trim().toLowerCase()
 
     //validate the data
-    if(!username || !room){
-        return{
+    if (!username || !room) {
+        return {
             'error': 'Username and room are required!'
         }
     }
 
     // check for existing user
-    const existingUser = users.find((user)=>{
+    const existingUser = users.find((user) => {
         return user.room === room && user.username === username
     })
 
     //Validate username
-    if(existingUser){
+    if (existingUser) {
         return {
-            'error' : 'Username is in use!'
+            'error': 'Username is in use!'
         }
     }
-    const user = {id , username, room}
+    const user = { id, username, room }
     users.push(user)
-    return {user}
+    return { user }
 }
 
-const removeUser = (id)=>{
-    const index = users.findIndex((user)=>{
+const removeUser = (id) => {
+    const index = users.findIndex((user) => {
         return user.id == id
     })
-    if(index !== -1){
-        return users.splice(index,1)
+    if (index !== -1) {
+        return users.splice(index, 1)
     }
+}
+
+const getUser = (id) => {
+    const user = users.find((user) => {
+        return user.id === id
+    })
+    if (!user) {
+        return {
+            'error': 'User not found!'
+        }
+    }
+    return user
+}
+
+const getUserInRoom = (room) => {
+    room = room.trim().toLowerCase()
+    return users.filter((user) => user.room === room )
 }
 
 addUser({
-    id: 56,
+    id: 32,
     username: 'omid',
     room: 'Blockchain'
 })
-// console.log(users)
-
-const result = addUser({
-    id: 24,
-    username: 'Elahe',
+addUser({
+    id: 33,
+    username: 'reza',
     room: 'Blockchain'
 })
+addUser({
+    id: 34,
+    username: 'jafar',
+    room: 'Programming'
+})
 
-// console.log(result)
+const user = getUser(32)
+console.log(user)
 
-const removedUser = removeUser(56)
+const userList = getUserInRoom('programming')
 
-console.log(removedUser)
-console.log(users)
+console.log(userList)
