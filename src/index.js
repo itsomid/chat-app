@@ -7,10 +7,10 @@ const { addUser, removeUser, getUser, getUserInRoom } = require('./utils/user')
 io.on('connection', (socket) => {
     console.log('New websocket connection');
 
-    socket.on('join', ({ username, room },callback) => {
-        const {error, user} = addUser({id: socket.id, username, room})
-        if(error){
-           return callback(error)
+    socket.on('join', ({ username, room }, callback) => {
+        const { error, user } = addUser({ id: socket.id, username, room })
+        if (error) {
+            return callback(error)
         }
 
         socket.join(user.room)
@@ -29,24 +29,25 @@ io.on('connection', (socket) => {
             return callback('profanity is not allowed!')
         }
         //emit the event to all connection
-        const  user = getUser(socket.id)
-      
-        io.to(user.room).emit('message', generateMessage(msg))
+        const user = getUser(socket.id)
+        // console.log(user)
+        io.to(user.room).emit('message', generateMessage(user.username, msg))
         callback()
     })
     socket.on('disconnect', () => {
         const user = removeUser(socket.id)
         // console.log(user)
-        if(user){
-            io.to(user.room).emit('message', generateMessage(`${user.username} has left!`))
+        if (user) {
+            io.to(user.room).emit('message', generateMessage(user.username,`${user.username} has left!`))
         }
-     
+
     })
 
     //setup a listener
     socket.on('sendLocation', (coords, callback) => {
-        const user = getUser(socket.io)
-        io.to(user.room).emit('locationMessage', generateLocationMessage(`https://google.com/maps?q=${coords.latitude},${coords.longitude}`))
+        const user = getUser(socket.id)
+
+        io.to(user.room).emit('locationMessage', generateLocationMessage(user.username,`https://google.com/maps?q=${coords.latitude},${coords.longitude}`))
         callback()
     })
 
