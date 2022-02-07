@@ -22,18 +22,21 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', (msg, callback) => {
         //emit the event to specific connection 
         // socket.emit('message',count)
+
         const filter = new Filter()
 
         if (filter.isProfane(msg)) {
             return callback('profanity is not allowed!')
         }
         //emit the event to all connection
-        io.emit('message', generateMessage(msg))
+        const  user = getUser(socket.id)
+      
+        io.to(user.room).emit('message', generateMessage(msg))
         callback()
     })
     socket.on('disconnect', () => {
         const user = removeUser(socket.id)
-        console.log(user)
+        // console.log(user)
         if(user){
             io.to(user.room).emit('message', generateMessage(`${user.username} has left!`))
         }
