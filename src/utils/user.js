@@ -8,7 +8,7 @@ const addUser = ({ id, username, room }) => {
     //validate the data
     if (!username || !room) {
         return {
-            'error': 'Username and room are required!'
+            error: 'Username and room are required!'
         }
     }
 
@@ -20,7 +20,7 @@ const addUser = ({ id, username, room }) => {
     //Validate username
     if (existingUser) {
         return {
-            'error': 'Username is in use!'
+            error: 'Username is in use!'
         }
     }
     const user = { id, username, room }
@@ -33,7 +33,7 @@ const removeUser = (id) => {
         return user.id == id
     })
     if (index !== -1) {
-        return users.splice(index, 1)
+        return users.splice(index, 1)[0]
     }
 }
 
@@ -53,7 +53,12 @@ const getUserInRoom = (room) => {
     room = room.trim().toLowerCase()
     return users.filter((user) => user.room === room )
 }
-
+const result = addUser({
+    id: 23,
+    username: 'asd',
+    room: 'ss'
+})
+console.log(result)
 module.exports = {
     addUser,
     removeUser,

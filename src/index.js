@@ -2,15 +2,21 @@ const { server, io } = require('./app')
 const port = process.env.PORT
 const Filter = require('bad-words')
 const { generateMessage, generateLocationMessage } = require('./utils/messages')
+const { addUser, removeUser, getUser, getUserInRoom } = require('./utils/user')
 
 io.on('connection', (socket) => {
     console.log('New websocket connection');
 
-    socket.on('join',({username, room})=>{
-        socket.join(room)
+    socket.on('join', ({ username, room },callback) => {
+        const {error, user} = addUser({id: socket.id, username, room})
+        if(error){
+           return callback(error)
+        }
+
+        socket.join(user.room)
         //socket.emit, socket.broadcast.emit, io.emit
         socket.emit('message', generateMessage('Welcome!'))
-        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined!`))
+        socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined!`))
     })
 
     socket.on('sendMessage', (msg, callback) => {
@@ -26,7 +32,12 @@ io.on('connection', (socket) => {
         callback()
     })
     socket.on('disconnect', () => {
-        io.emit('message', generateMessage('user has left!'))
+        const user = removeUser(socket.id)
+        console.log(user)
+        if(user){
+            io.to(user.room).emit('message', generateMessage(`${user.username} has left!`))
+        }
+     
     })
 
     //setup a listener
