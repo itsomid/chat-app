@@ -49,19 +49,14 @@ const getUser = (id) => {
     return user
 }
 
-const getUserInRoom = (room) => {
+const getUsersInRoom = (room) => {
     room = room.trim().toLowerCase()
     return users.filter((user) => user.room === room )
 }
-const result = addUser({
-    id: 23,
-    username: 'asd',
-    room: 'ss'
-})
-console.log(result)
+
 module.exports = {
     addUser,
     removeUser,
     getUser,
-    getUserInRoom
+    getUsersInRoom
 }
