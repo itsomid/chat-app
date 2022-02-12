@@ -12,8 +12,35 @@ const $sidebar = document.querySelector('#sidebar')
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationTemplate = document.querySelector('#location-message-template').innerHTML
 const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
+
 //Options
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
+
+const autoScroll = () => {
+    // New message element
+    const $newMessage = $messages.lastElementChild
+
+    //Height of the new message
+    const newMessageStyles = getComputedStyle($newMessage)
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom)
+    const newMessageHeigt = $newMessage.offsetHeight + newMessageMargin
+
+    // Visible height
+    const visibleHeight = $messages.offsetHeight
+    console.log('visibleHeight', visibleHeight)
+
+    //Height of message container
+    const containerHeight = $messages.scrollHeight
+    console.log('containerHeight', containerHeight)
+
+    //how far hav i scrolled?
+    const scrollOffset = $messages.scrollTop + visibleHeight
+    console.log('scrollOffset', scrollOffset)
+
+    if(containerHeight - newMessageHeigt <= scrollOffset){
+        $messages.scrollTop = $messages.scrollHeight
+    }
+}
 
 socket.on('message', (message) => {
     console.log(message)
@@ -23,6 +50,7 @@ socket.on('message', (message) => {
         createdAt: moment(message.createdAt).format('H:mm')
     })
     $messages.insertAdjacentHTML('beforeend', html)
+    autoScroll()
 })
 socket.on('locationMessage', (message) => {
     console.log(message)
@@ -32,11 +60,12 @@ socket.on('locationMessage', (message) => {
         createdAt: moment(message.createdAt).format('H:mm')
     })
     $messages.insertAdjacentHTML('beforeend', html)
+    autoScroll()
 })
 
-socket.on('roomData', ({room, users}) => {
+socket.on('roomData', ({ room, users }) => {
     console.log(room)
-    const html = Mustache.render(sidebarTemplate,{
+    const html = Mustache.render(sidebarTemplate, {
         users,
         room
     })
